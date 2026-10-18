@@ -1,0 +1,8 @@
+{
+  "crons": [
+    { "path": "/api/internal/domain-payment-recovery", "schedule": "*/5 * * * *" },
+    { "path": "/api/internal/business-lifecycle-emails", "schedule": "*/5 * * * *" },
+    { "path": "/api/internal/subscription-billing", "schedule": "*/5 * * * *" },
+    { "path": "/api/internal/apple-pay-domains", "schedule": "*/5 * * * *" }
+  ]
+}
