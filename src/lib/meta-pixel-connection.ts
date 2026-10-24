@@ -4,6 +4,14 @@ import crypto from "node:crypto";
 
 const GRAPH_VERSION = process.env.META_GRAPH_API_VERSION || "v26.0";
 const STATE_TTL_MS = 10 * 60 * 1000;
+// Meta requires the Page permissions as dependencies of business_management
+// and ads_management, even though Mediasis does not read or display Page data.
+const DEFAULT_OAUTH_SCOPES = [
+  "business_management",
+  "ads_management",
+  "pages_show_list",
+  "pages_read_engagement",
+];
 // Merchant-owned connections use Meta's Business On Behalf Of endpoint.
 // Mediasis-owned Pixels use Mediasis's existing permanent system-user credential.
 const CAPI_SENDING_SCOPES = ["ads_management"];
@@ -54,7 +62,7 @@ function config(): MetaConfig {
   if (!appId || !appSecret || !baseUrl || !partnerBusinessId || !partnerSystemUserToken) throw new Error(metaConfigurationIssue() || "Meta connection is not configured.");
   const parsed = new URL(baseUrl);
   if (parsed.protocol !== "https:") throw new Error("DASHBOARD_BASE_URL must use HTTPS.");
-  return { appId, appSecret, baseUrl: parsed.origin, partnerBusinessId, partnerSystemUserToken, scopes: (process.env.META_OAUTH_SCOPES || "business_management,ads_management").split(",").map((value) => value.trim()).filter(Boolean) };
+  return { appId, appSecret, baseUrl: parsed.origin, partnerBusinessId, partnerSystemUserToken, scopes: (process.env.META_OAUTH_SCOPES || DEFAULT_OAUTH_SCOPES.join(",")).split(",").map((value) => value.trim()).filter(Boolean) };
 }
 
 export function callbackUrl() { return new URL("/api/meta/callback", config().baseUrl).toString(); }

@@ -24,7 +24,13 @@ import { useDashboardSupabase } from "@/hooks/use-dashboard-supabase";
 import { useDashboardAuthorization } from "@/components/dashboard/DashboardAuthProvider";
 import { marketDayBoundaryUtcIso, marketDayInclusiveEndUtcIso } from "@/lib/dashboard/market";
 
-type EditableOrderStatus = "pending" | "preparing" | "ready" | "cancelled";
+type EditableOrderStatus =
+  | "pending"
+  | "preparing"
+  | "ready_for_pickup"
+  | "on_the_way"
+  | "delivered"
+  | "cancelled";
 
 export default function MainPage() {
   const market = useDashboardAuthorization().market;

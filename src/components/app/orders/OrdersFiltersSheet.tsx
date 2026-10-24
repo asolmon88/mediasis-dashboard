@@ -46,6 +46,8 @@ const ORDER_STATUS_OPTIONS = [
   "pending",
   "new",
   "preparing",
+  "ready_for_pickup",
+  "on_the_way",
   "ready",
   "accepted",
   "delivered",

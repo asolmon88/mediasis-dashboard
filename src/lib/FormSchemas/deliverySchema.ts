@@ -13,7 +13,7 @@ export const DeliverySchema = z.object({
     .number()
     .int("Debe ser un número entero")
     .min(1, "Debe ser al menos 1 minuto")
-    .max(180, "Debe ser menor o igual a 180 minutos"),
+    .max(20, "No se permite configurar un tiempo de preparación mayor a 20 minutos."),
   fee: nonNegativeNumber.optional(),
   min_order_value: nonNegativeNumber.optional(),
   free_delivery_value: nonNegativeNumber.optional(),

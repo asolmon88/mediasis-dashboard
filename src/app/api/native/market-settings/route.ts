@@ -34,8 +34,8 @@ export async function GET(request: Request) {
   try {
     const admin = createAdminClient();
     const { data: location, error: locationError } = await admin.schema("mediasis")
-      .from("business_location").select("business_uid")
-      .eq("business_location_id", locationId).is("archived_at", null).maybeSingle();
+      .from("active_business_location").select("business_uid")
+      .eq("business_location_id", locationId).maybeSingle();
     if (locationError) {
       logFailure("location_lookup", {
         locationId,

@@ -68,6 +68,7 @@ export async function resolveUberDeliveryContext(
       token: string;
       baseUrl: string;
       deliveryCreatedAt: string | null;
+      orderStatus: string | null;
     }
   | {
       success: false;
@@ -77,7 +78,7 @@ export async function resolveUberDeliveryContext(
   const { data: orderData, error: orderError } = await supabase
     .schema("mediasis")
     .from("orders")
-    .select("uber_delivery_id, delivery_method, business_location_id, delivery_created_at")
+    .select("uber_delivery_id, delivery_method, business_location_id, delivery_created_at, order_status")
     .eq("order_id", orderId)
     .maybeSingle();
 
@@ -93,6 +94,8 @@ export async function resolveUberDeliveryContext(
     (orderData as { uber_delivery_id?: string | null }).uber_delivery_id ?? null;
   const ordersDeliveryCreatedAt =
     (orderData as { delivery_created_at?: string | null }).delivery_created_at ?? null;
+  const orderStatus =
+    (orderData as { order_status?: string | null }).order_status ?? null;
 
   if (!businessLocationId) {
     return { success: false, message: "Pedido inválido para actualización" };
@@ -166,6 +169,7 @@ export async function resolveUberDeliveryContext(
     token,
     baseUrl,
     deliveryCreatedAt,
+    orderStatus,
   };
 }
 
@@ -325,7 +329,9 @@ export async function updatePickupWindow(
 }
 
 const NON_EDITABLE_PICKUP_STATUSES = new Set([
+  "pickup",
   "pickup_complete",
+  "dropoff",
   "delivered",
   "canceled",
   "returned",
@@ -339,6 +345,13 @@ export async function requestPickupNow(
 ): Promise<UpdatePickupWindowResult> {
   const context = await resolveUberDeliveryContext(supabase, userId, orderId);
   if (!context.success) return context;
+
+  if (context.orderStatus === "ready_for_pickup" || context.orderStatus === "ready") {
+    return {
+      success: false,
+      message: "El pedido ya está listo para recoger o fue entregado",
+    };
+  }
 
   const now = Date.now();
   const { pickupReady, pickupDeadline, dropoffReady, dropoffDeadline } =

@@ -17,7 +17,7 @@ type UpdateOrderStatusResult = {
 };
 
 export async function markOrderReadyAction(orderId: string): Promise<UpdateOrderStatusResult> {
-  return updateOrderStatusAction(orderId, "ready");
+  return updateOrderStatusAction(orderId, "ready_for_pickup");
 }
 
 export async function updateUberPickupWindowAction(

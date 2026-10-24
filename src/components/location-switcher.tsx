@@ -58,7 +58,7 @@ export function LocationSwitcher() {
     (business) => business.businessId === authorization.activeBusinessId,
   )
   const activeBusinessName = activeBusiness?.name ?? "Negocio Mediasis"
-  const activeBusinessLogo = activeBusiness?.avatarUrl ?? "/images/mediasis-logo.png"
+  const activeBusinessLogo = activeBusiness?.avatarUrl ?? "/mediasis-logo.png"
   const activeLocation = useActiveLocation()
   const locations = useBusinessLocations()
   const selectLocation = useLocationStore((state) => state.selectLocation)

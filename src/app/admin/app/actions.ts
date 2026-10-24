@@ -181,7 +181,7 @@ export async function upsertCheckoutData({
 
   const { data: location, error: locationError } = await authorized.admin
     .schema('mediasis')
-    .from('business_location')
+    .from('active_business_location')
     .select('business_location_id')
     .eq('business_location_id', businessLocationId)
     .eq('business_uid', authorized.businessId)

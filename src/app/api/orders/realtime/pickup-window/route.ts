@@ -58,6 +58,10 @@ type PickupWindowRequestBody = {
   readyInMinutes?: number;
 };
 
+const MAX_PREPARATION_MINUTES = 20;
+const MAX_PREPARATION_MINUTES_MESSAGE =
+  "No se permite configurar un tiempo de preparación mayor a 20 minutos.";
+
 function getBearerToken(request: Request) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader) return null;
@@ -102,6 +106,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (!orderId || !Number.isFinite(readyInMinutes)) {
     return NextResponse.json(
       { success: false, message: "orderId and readyInMinutes are required" },
+      { status: 400 }
+    );
+  }
+
+  if (readyInMinutes > MAX_PREPARATION_MINUTES) {
+    return NextResponse.json(
+      { success: false, message: MAX_PREPARATION_MINUTES_MESSAGE },
       { status: 400 }
     );
   }

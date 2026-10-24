@@ -153,10 +153,9 @@ export async function POST(request: Request): Promise<NextResponse> {
   // Fetch all business location IDs
   const { data: allLocRows } = await supabase
     .schema("mediasis")
-    .from("business_location")
+    .from("active_business_location")
     .select("business_location_id")
-    .eq("business_uid", businessId)
-    .is("archived_at", null);
+    .eq("business_uid", businessId);
 
   const allLocationIds: string[] = (allLocRows ?? []).map(
     (r: { business_location_id: string }) => r.business_location_id

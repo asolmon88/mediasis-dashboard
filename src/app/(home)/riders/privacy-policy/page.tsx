@@ -13,7 +13,7 @@ const sections = [
     title: "1. Who We Are",
     body: [
       "This Privacy Policy explains how Mediasis collects, uses, shares, protects, and deletes personal information when riders use the Mediasis mobile application and related services.",
-      "Mediasis is a rider delivery application used to receive delivery offers, navigate to pickup and dropoff locations, update delivery progress, communicate when needed for delivery support, and submit proof of delivery.",
+      "Mediasis is a rider food delivery application used to receive delivery offers, navigate to pickup and dropoff locations, update delivery progress, communicate when needed for delivery support, and submit proof of delivery.",
     ],
   },
   {

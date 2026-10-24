@@ -269,10 +269,13 @@ export type OrderDetailResponse = {
 export type OrderStatus =
   | "new"
   | "preparing"
+  | "ready_for_pickup"
+  | "on_the_way"
   | "ready"
   | "pending"
   | "accepted"
-  | "delivered";
+  | "delivered"
+  | "cancelled";
 
 export type OrderClient = {
   first_name: string;

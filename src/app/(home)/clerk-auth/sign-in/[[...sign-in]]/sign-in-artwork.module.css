@@ -1,0 +1,87 @@
+.panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgb(28 48 82 / 34%), transparent 43%),
+    linear-gradient(180deg, #020614 0%, #030817 57%, #111a2c 100%);
+}
+
+.floorLight {
+  position: absolute;
+  inset: 48% 0 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgb(151 158 177 / 34%), transparent 72%),
+    linear-gradient(180deg, transparent 0%, rgb(74 89 118 / 12%) 54%, rgb(130 138 157 / 18%) 100%);
+  pointer-events: none;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.045;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.5'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  width: min(100%, calc((100dvh - 2rem) * 0.8));
+  height: 100%;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+.logo {
+  position: absolute;
+  top: 8.2%;
+  right: 0;
+  width: 45.5%;
+  height: auto;
+  z-index: 4;
+}
+
+.phone {
+  position: absolute;
+  top: 10.3%;
+  left: 5%;
+  width: 83%;
+  height: auto;
+  z-index: 3;
+  filter: drop-shadow(0 8px 7px rgb(0 0 0 / 34%));
+}
+
+.phoneShadow {
+  position: absolute;
+  top: 75%;
+  left: 14%;
+  width: 78%;
+  height: 12%;
+  z-index: 2;
+  transform: rotate(-8deg);
+  transform-origin: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 58% 50%, rgb(0 0 0 / 88%) 0%, rgb(0 0 0 / 68%) 31%, rgb(0 0 0 / 34%) 53%, transparent 76%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+.caption {
+  position: absolute;
+  right: 20%;
+  bottom: 3.5%;
+  left: 20%;
+  z-index: 4;
+  margin: 0;
+  color: rgb(255 255 255 / 96%);
+  font-size: 1.35cqi;
+  font-weight: 400;
+  line-height: 1.18;
+  text-align: center;
+}

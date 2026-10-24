@@ -35,7 +35,13 @@ type OrdersTableProps = {
   ) => void;
 };
 
-type EditableOrderStatus = "pending" | "preparing" | "ready" | "cancelled";
+type EditableOrderStatus =
+  | "pending"
+  | "preparing"
+  | "ready_for_pickup"
+  | "on_the_way"
+  | "delivered"
+  | "cancelled";
 
 const formatDate = (value: string, locale: string, timeZone: string) =>
   new Date(value).toLocaleString(locale, {
@@ -67,12 +73,20 @@ const paymentStatusClassName = (status: string) => {
 
 const normalizeTableStatus = (status: string) => (status === "new" ? "pending" : status);
 
-const BASE_STATUS_OPTIONS: EditableOrderStatus[] = ["pending", "preparing", "ready"];
+const getStatusOptions = (row: OrdersTableRow): EditableOrderStatus[] => {
+  const fulfillmentStatus: EditableOrderStatus =
+    row.delivery_require_location && !row.delivery_require_courier
+      ? "on_the_way"
+      : "ready_for_pickup";
+  const statuses: EditableOrderStatus[] = [
+    "pending",
+    "preparing",
+    fulfillmentStatus,
+    "delivered",
+  ];
 
-const getStatusOptions = (row: OrdersTableRow): EditableOrderStatus[] =>
-  row.payment_managed_by_business
-    ? [...BASE_STATUS_OPTIONS, "cancelled"]
-    : BASE_STATUS_OPTIONS;
+  return row.payment_managed_by_business ? [...statuses, "cancelled"] : statuses;
+};
 
 const StatusEditor = ({
   row,

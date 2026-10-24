@@ -516,6 +516,7 @@ export default function ExpressForm({
       free_delivery_value: 0,
       require_location: false,
       require_courier: false,
+      payment_methods: [],
       business_location_id: [],
       options: [],
       delivery_method_id: deliveryMethodId,
@@ -755,36 +756,57 @@ export default function ExpressForm({
               name="payment_methods"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Métodos de pago</FieldLabel>
-                  <MultiSelector
-                    values={
-                      (field.value || []).map((id: string): MultiSelectValue => ({
-                        value: id,
-                        label: paymentMethods.find((method) => method.id === id)?.name || id,
-                      }))
-                    }
-                    onValuesChange={(vals) => field.onChange(vals.map((v) => v.value))}
-                    loop
-                    className="w-full"
-                  >
-                    <MultiSelectorTrigger>
-                      <MultiSelectorInput placeholder="Selecciona métodos de pago" />
-                    </MultiSelectorTrigger>
-                    <MultiSelectorContent>
-                      <MultiSelectorList>
-                        {paymentMethods.map((method) => (
-                          <MultiSelectorItem
-                            key={method.id}
-                            value={method.id}
-                            label={method.name}
-                          >
-                            {method.name}
-                          </MultiSelectorItem>
-                        ))}
-                      </MultiSelectorList>
-                    </MultiSelectorContent>
-                  </MultiSelector>
+                <Field data-invalid={fieldState.invalid} className="space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <FieldLabel>Métodos de pago (opcional)</FieldLabel>
+                    {(field.value?.length ?? 0) > 0 ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => field.onChange([])}
+                      >
+                        Dejar sin métodos de pago
+                      </Button>
+                    ) : null}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Podés dejarlo vacío si la farmacia coordina el pago directamente.
+                  </p>
+                  {paymentMethods.length > 0 ? (
+                    <MultiSelector
+                      values={
+                        (field.value || []).map((id: string): MultiSelectValue => ({
+                          value: id,
+                          label: paymentMethods.find((method) => method.id === id)?.name || id,
+                        }))
+                      }
+                      onValuesChange={(vals) => field.onChange(vals.map((v) => v.value))}
+                      loop
+                      className="w-full"
+                    >
+                      <MultiSelectorTrigger>
+                        <MultiSelectorInput placeholder="Seleccioná métodos de pago" />
+                      </MultiSelectorTrigger>
+                      <MultiSelectorContent>
+                        <MultiSelectorList>
+                          {paymentMethods.map((method) => (
+                            <MultiSelectorItem
+                              key={method.id}
+                              value={method.id}
+                              label={method.name}
+                            >
+                              {method.name}
+                            </MultiSelectorItem>
+                          ))}
+                        </MultiSelectorList>
+                      </MultiSelectorContent>
+                    </MultiSelector>
+                  ) : (
+                    <div className="rounded-lg border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
+                      Este negocio no tiene métodos de pago configurados. Podés guardar este método de delivery sin seleccionar ninguno.
+                    </div>
+                  )}
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}

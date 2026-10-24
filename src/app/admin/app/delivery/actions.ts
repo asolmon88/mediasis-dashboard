@@ -6,9 +6,20 @@ import { minutesToIntervalLiteral } from "@/lib/utils";
 type OffsetArgs = { business_delivery_method_id: string; business_location_id: string; pickup_ready_offset_minutes: number };
 type GetArgs = { business_location_id: string; delivery_method_ids: string[] };
 
+const MAX_PREPARATION_MINUTES = 20;
+const MAX_PREPARATION_MINUTES_MESSAGE =
+  "No se permite configurar un tiempo de preparación mayor a 20 minutos.";
+
 export async function updateDeliveryPickupReadyOffsetByLocation(input: OffsetArgs) {
+  if (
+    Number.isFinite(input.pickup_ready_offset_minutes) &&
+    input.pickup_ready_offset_minutes > MAX_PREPARATION_MINUTES
+  ) {
+    return { success: false, message: MAX_PREPARATION_MINUTES_MESSAGE };
+  }
+
   const minutes = Number.isFinite(input.pickup_ready_offset_minutes)
-    ? Math.max(1, Math.min(180, Math.round(input.pickup_ready_offset_minutes))) : NaN;
+    ? Math.max(1, Math.round(input.pickup_ready_offset_minutes)) : NaN;
   if (!input.business_delivery_method_id || !input.business_location_id || Number.isNaN(minutes)) {
     return { success: false, message: "Datos inválidos para actualizar el tiempo de preparación." };
   }

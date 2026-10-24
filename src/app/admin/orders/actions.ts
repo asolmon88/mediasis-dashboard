@@ -2,10 +2,26 @@
 
 import { requireOrderAccess } from "@/lib/dashboard/order-authorization";
 
-export type EditableOrderStatus = "pending" | "preparing" | "ready" | "cancelled";
+export type EditableOrderStatus =
+  | "pending"
+  | "preparing"
+  | "ready_for_pickup"
+  | "on_the_way"
+  | "delivered"
+  | "cancelled";
 
 export async function updateOrderStatusAction(orderId: string, nextStatus: EditableOrderStatus) {
-  if (!orderId || !["pending", "preparing", "ready", "cancelled"].includes(nextStatus)) {
+  if (
+    !orderId ||
+    ![
+      "pending",
+      "preparing",
+      "ready_for_pickup",
+      "on_the_way",
+      "delivered",
+      "cancelled",
+    ].includes(nextStatus)
+  ) {
     return { success: false, message: "Estado de pedido inválido." };
   }
   const authorized = await requireOrderAccess(orderId);

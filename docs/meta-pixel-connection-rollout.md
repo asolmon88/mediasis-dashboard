@@ -8,6 +8,14 @@ token for that same portfolio. Both values are configured once for Mediasis. The
 dashboard verifies the app's owner through Meta before creating a credential.
 An ad account ID is not a Business Portfolio ID.
 
+The merchant authorization requests `business_management` and
+`ads_management`, plus Meta's required dependency permissions
+`pages_show_list` and `pages_read_engagement`. Mediasis does not read, display, or
+store Facebook Page content or engagement data; the Page permissions are
+requested only because Meta requires them for the two primary permissions.
+Keep all four permissions aligned between the OAuth request, App Review
+submission, reviewer instructions, and screencast.
+
 Foody (`787c460a-8896-4ea6-a1c3-509f93faa8f5`) is the only business allowed
 to connect during the pilot. The dashboard discovers the owner of Pixel
 `1465410088761576` from the Meta authorization. A Pixel owned by the Mediasis

@@ -78,6 +78,16 @@ test("Mediasis-owned pixel reuses Mediasis's permanent system-user credential an
   assert.equal(calls.some(({ url }) => url.pathname === `/v26.0/${pixelId}`), true);
 });
 
+test("Meta authorization requests the complete permission dependency chain", () => {
+  const { api } = harness("100");
+  const state = api.createState("foody", "actor", pixelId);
+  const url = new URL(api.authorizationUrl(state));
+  assert.deepEqual(
+    url.searchParams.get("scope").split(","),
+    ["business_management", "ads_management", "pages_show_list", "pages_read_engagement"],
+  );
+});
+
 test("merchant-owned pixel discovers its portfolio and uses OBO", async () => {
   const { api, calls } = harness("400");
   const result = await api.createSendingCredential("user-token", pixelId);
