@@ -2,7 +2,7 @@
 
 import { createClerkClient } from "@clerk/backend";
 
-const approvedEmails = ["alejandrog@mediasis.cr", "ariel.solis@mediasis.cr"];
+const approvedEmails = ["alejandrog@eatsycr.com", "ariel.solis@eatsycr.com"];
 const dryRun = process.argv.includes("--dry-run");
 const confirmed = process.argv.includes("--confirm-production");
 const replacePending = process.argv.includes("--replace-pending");

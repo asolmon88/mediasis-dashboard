@@ -77,7 +77,7 @@ export const synchronizeClerkIdentity = cache(async function synchronizeClerkIde
     }
   }
 
-  if (normalizedEmail === "alejandrog@mediasis.cr" || normalizedEmail === "ariel.solis@mediasis.cr") {
+  if (normalizedEmail === "alejandrog@eatsycr.com" || normalizedEmail === "ariel.solis@eatsycr.com") {
     const { data: provisioned, error: provisioningError } = await admin
       .schema("mediasis")
       .rpc("provision_initial_mediasis_staff", {
@@ -233,8 +233,14 @@ export const getDashboardAuthorizationContext = cache(async function getDashboar
     }
   }
   if (error) {
-    console.error("[dashboard-bootstrap] rpc_failed", { code: error.code, message: error.message });
-    throw new Error("No se pudo cargar el contexto del dashboard.");
+    const diagnostic = {
+      code: error.code ?? null,
+      message: error.message ?? null,
+      details: error.details ?? null,
+      hint: error.hint ?? null,
+    };
+    console.error("[dashboard-bootstrap] rpc_failed", JSON.stringify(diagnostic));
+    throw new Error(`No se pudo cargar el contexto del dashboard: ${error.message ?? "error desconocido"}`);
   }
   if (!data?.success) return null;
   console.info("[dashboard-bootstrap] timings_ms", { total: Date.now() - started, rpc: Date.now() - rpcStarted });

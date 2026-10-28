@@ -87,7 +87,7 @@ export async function sendBusinessLifecycleEmail(email: BusinessLifecycleEmail) 
   const rendered = renderEmail(email);
   return sendBrevoTransactionalEmail({
     senderName: "Mediasis",
-    senderEmail: process.env.BREVO_SENDER_EMAIL?.trim() || "alejandrog@mediasis.cr",
+    senderEmail: process.env.BREVO_SENDER_EMAIL?.trim() || "alejandrog@eatsycr.com",
     to: email.recipient_email,
     ...rendered,
     idempotencyKey: email.brevo_idempotency_key,

@@ -37,7 +37,7 @@ export function renderDomainPurchaseReceiptEmail(receipt: DomainPurchaseReceiptE
 export async function sendDomainPurchaseReceiptEmail(receipt: DomainPurchaseReceiptEmail) {
   return sendBrevoTransactionalEmail({
     senderName: "Mediasis",
-    senderEmail: process.env.BREVO_SENDER_EMAIL?.trim() || "alejandrog@mediasis.cr",
+    senderEmail: process.env.BREVO_SENDER_EMAIL?.trim() || "alejandrog@eatsycr.com",
     to: receipt.email,
     subject: `Comprobante de compra · ${receipt.domain}`,
     htmlContent: renderDomainPurchaseReceiptEmail(receipt),

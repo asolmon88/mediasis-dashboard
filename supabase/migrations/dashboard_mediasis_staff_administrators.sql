@@ -283,7 +283,7 @@ declare
   v_staff_role_id uuid;
   v_already_active boolean := false;
 begin
-  if v_email not in ('alejandrog@mediasis.cr', 'ariel.solis@mediasis.cr') then
+  if v_email not in ('alejandrog@eatsycr.com', 'ariel.solis@eatsycr.com') then
     raise exception 'Email is not approved for initial staff provisioning';
   end if;
   if nullif(pg_catalog.btrim(p_clerk_user_id), '') is null then

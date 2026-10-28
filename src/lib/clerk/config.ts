@@ -34,7 +34,7 @@ export function normalizeDashboardHost(host: string | null | undefined) {
  */
 export function dashboardAuthenticationMode(host: string | null | undefined): DashboardAuthenticationMode {
   const normalized = normalizeDashboardHost(host);
-  if (normalized === "dashboard.mediasis.cr") return "legacy";
+  if (normalized === "dashboard.eatsycr.com") return "legacy";
   if (normalized === "dashboard.mediasis.cr" || normalized.endsWith(".mediasis.cr")) return "clerk";
   return "hybrid";
 }

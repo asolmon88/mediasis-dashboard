@@ -76,7 +76,7 @@ export async function updateReservation(
     if (!market) return { success: false, message: "El negocio no tiene configuración regional." };
     await sendBrevoEmail({
       senderName: "mediasis Reservas",
-      senderEmail: "alejandrog@mediasis.cr",
+      senderEmail: "alejandrog@eatsycr.com",
       to: [notification.client_email],
       templateId: 2,
       params: {
