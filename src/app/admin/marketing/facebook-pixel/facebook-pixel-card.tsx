@@ -1,47 +1,86 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { BarChart3, CheckCircle2, ExternalLink, Server, Unplug } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { BarChart3, Eye, EyeOff, Unplug } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { disconnectMetaPixel, saveMetaPixelId } from "./actions";
+import { disconnectMetaPixel, getMetaPixelToken, saveMetaPixelSettings } from "./actions";
 
-type Props = { pixelId: string | null; serverEventsConnected: boolean; canManage: boolean };
-const failureMessages: Record<string, string> = {
-  "pixel-access": "No encontramos ese pixel entre los activos de tu cuenta de Meta. Revisá el ID y tu acceso al pixel.",
-  "assignment-permission": "Meta no permitió asignar este pixel a la conexión. Revisá que tu cuenta tenga control total del pixel y del portafolio empresarial. Si ya lo tiene, contactá a soporte de Mediasis.",
-  "authorization-invalid": "Tu autorización de Meta ya no es válida. Volvé a conectar tu cuenta.",
-  temporary: "Meta no pudo completar la conexión en este momento. Esperá unos minutos e intentá de nuevo.",
-  configuration: "No pudimos completar la conexión por un problema de configuración. Contactá a soporte de Mediasis.",
-  unknown: "No pudimos conectar el pixel. Intentá de nuevo; si continúa, contactá a soporte de Mediasis.",
-};
-const messages: Record<string, string> = { connected: "Facebook pixel se conectó. Los nuevos eventos usarán la credencial guardada.", denied: "Cancelaste la autorización en Meta. Podés intentarlo de nuevo.", "oauth-failed": "Meta no pudo completar la autorización. Intentá de nuevo.", expired: "La sesión de conexión venció. Volvé a conectar el pixel.", "invalid-state": "La sesión de conexión venció. Volvé a conectar el pixel.", forbidden: "No tenés acceso a esta conexión.", "invalid-pixel": "Ingresá un ID de pixel válido.", unavailable: "La conexión de Meta todavía no está configurada en el servidor." };
+type Props = { pixelId: string | null; hasSavedToken: boolean; canManage: boolean };
+const MASKED_TOKEN = "••••••••••••••••";
 
-export function FacebookPixelCard({ pixelId, serverEventsConnected, canManage }: Props) {
-  const [value, setValue] = useState(pixelId ?? "");
+export function FacebookPixelCard({ pixelId, hasSavedToken, canManage }: Props) {
+  const [pixelValue, setPixelValue] = useState(pixelId ?? "");
+  const [configured, setConfigured] = useState(Boolean(pixelId));
+  const [tokenValue, setTokenValue] = useState(hasSavedToken ? MASKED_TOKEN : "");
+  const [tokenSaved, setTokenSaved] = useState(hasSavedToken);
+  const [tokenDirty, setTokenDirty] = useState(false);
+  const [tokenLoaded, setTokenLoaded] = useState(false);
+  const [tokenVisible, setTokenVisible] = useState(false);
   const [pending, startTransition] = useTransition();
   const [actionMessage, setActionMessage] = useState<{ success: boolean; message: string } | null>(null);
-  const params = useSearchParams();
-  const result = params.get("meta");
-  const reason = params.get("reason");
-  const valid = /^\d{5,30}$/.test(value.trim());
-  const connectServerEvents = () => { if (valid) window.location.assign(`/api/meta/connect?pixel_id=${encodeURIComponent(value.trim())}`); };
-  const save = () => startTransition(async () => setActionMessage(await saveMetaPixelId(value)));
+  const validPixel = /^\d{5,30}$/.test(pixelValue.trim());
+  const validToken = tokenDirty ? tokenValue.trim().length > 0 : tokenSaved;
+
+  const toggleTokenVisibility = () => {
+    if (tokenVisible) {
+      setTokenVisible(false);
+      return;
+    }
+    if (!tokenSaved || tokenDirty || tokenLoaded) {
+      setTokenVisible(true);
+      return;
+    }
+    startTransition(async () => {
+      const result = await getMetaPixelToken();
+      if (!result.success) {
+        setActionMessage(result);
+        return;
+      }
+      setTokenValue(result.token);
+      setTokenLoaded(true);
+      setTokenVisible(true);
+      setActionMessage(null);
+    });
+  };
+
+  const save = () => startTransition(async () => {
+    const result = await saveMetaPixelSettings(pixelValue, tokenDirty ? tokenValue : null);
+    setActionMessage(result);
+    if (result.success) {
+      setConfigured(true);
+      setTokenSaved(true);
+      setTokenDirty(false);
+      setTokenVisible(false);
+      if (!tokenLoaded) setTokenValue(MASKED_TOKEN);
+    }
+  });
   const disconnect = () => startTransition(async () => {
     const result = await disconnectMetaPixel();
     setActionMessage(result);
-    if (result.success) setValue("");
+    if (result.success) {
+      setConfigured(false);
+      setPixelValue("");
+      setTokenValue("");
+      setTokenSaved(false);
+      setTokenDirty(false);
+      setTokenLoaded(false);
+      setTokenVisible(false);
+    }
   });
-  return <Card><CardHeader><div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><BarChart3 className="size-5" /></div><CardTitle>Facebook pixel</CardTitle><CardDescription>Ingresá el ID de tu pixel para medir visitas y acciones desde la app de pedidos. No necesitás iniciar sesión en Facebook.</CardDescription></CardHeader><CardContent className="space-y-5 border-t pt-6">
-    {result && <div className={`rounded-md border p-3 text-sm ${result === "connected" ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-destructive/30 bg-destructive/5 text-destructive"}`}>{result === "connected" && <CheckCircle2 className="mr-2 inline size-4" />}{result === "failed" ? failureMessages[reason ?? "unknown"] : messages[result] ?? "No se pudo completar la operación."}</div>}
+  return <Card><CardHeader><div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><BarChart3 className="size-5" /></div><CardTitle>Facebook pixel</CardTitle><CardDescription>Ingresá el ID de tu pixel y el token de la API de conversiones para enviar eventos desde el navegador y el servidor.</CardDescription></CardHeader><CardContent className="space-y-5 border-t pt-6">
     {actionMessage && <div className={`rounded-md border p-3 text-sm ${actionMessage.success ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-destructive/30 bg-destructive/5 text-destructive"}`}>{actionMessage.message}</div>}
     {!canManage && <div className="rounded-md border border-muted bg-muted/40 p-3 text-sm text-muted-foreground">Tu plan permite ver la conexión de Facebook pixel. Para cambiarla, contactá al equipo de Mediasis.</div>}
-    <div className="space-y-2"><label htmlFor="pixel-id" className="text-sm font-medium">ID del pixel</label><Input id="pixel-id" inputMode="numeric" placeholder="Ingresá el ID de tu pixel" value={value} onChange={(event) => setValue(event.target.value)} disabled={pending || !canManage} /></div>
-    {pixelId && <div className="flex items-start gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900"><CheckCircle2 className="mt-0.5 size-4 shrink-0" /><div><p className="font-medium">Eventos del navegador activos</p><p>La app de pedidos carga este pixel cuando el cliente acepta las cookies de medición.</p></div></div>}
-    {canManage && <div className="flex flex-wrap gap-3"><Button onClick={save} disabled={pending || !valid}>{pixelId ? "Guardar cambios" : "Activar pixel"}</Button>{pixelId && <Button variant="outline" onClick={disconnect} disabled={pending}><Unplug /> Desconectar</Button>}</div>}
-    {pixelId && <div className="space-y-3 rounded-md border p-4"><div className="flex items-start gap-3"><Server className="mt-0.5 size-4 shrink-0" /><div><p className="text-sm font-medium">Eventos del servidor</p><p className="text-sm text-muted-foreground">{serverEventsConnected ? "Activos. Mediasis también envía eventos mediante la API de conversiones y los deduplica con los del navegador." : "Opcionales. Meta exige una autorización con acceso a este pixel; el ID por sí solo no permite enviar eventos desde el servidor."}</p></div></div>{canManage && <Button variant="outline" onClick={connectServerEvents} disabled={pending || !valid}>{serverEventsConnected ? "Reconectar eventos del servidor" : "Conectar eventos del servidor"} <ExternalLink /></Button>}</div>}
-    <p className="text-xs text-muted-foreground">No necesitás iniciar sesión en Facebook para los eventos del navegador. La autorización de Meta se solicita únicamente para los eventos del servidor.</p>
+    <div className="space-y-2"><label htmlFor="pixel-id" className="text-sm font-medium">ID del pixel</label><Input id="pixel-id" inputMode="numeric" autoComplete="off" placeholder="Ingresá el ID de tu pixel" value={pixelValue} onChange={(event) => setPixelValue(event.target.value)} disabled={pending || !canManage} /></div>
+    <div className="space-y-2">
+      <label htmlFor="capi-token" className="text-sm font-medium">Token de la API de conversiones</label>
+      <div className="relative">
+        <Input id="capi-token" type={tokenVisible ? "text" : "password"} autoComplete="off" className="pr-11" placeholder="Ingresá el token generado en Meta" value={tokenValue} onFocus={(event) => { if (tokenSaved && !tokenLoaded && !tokenDirty) event.currentTarget.select(); }} onChange={(event) => { setTokenValue(event.target.value); setTokenDirty(true); }} disabled={pending || !canManage} />
+        {canManage && <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 size-8 -translate-y-1/2" onClick={toggleTokenVisibility} disabled={pending} aria-label={tokenVisible ? "Ocultar token" : "Mostrar token"}>{tokenVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}</Button>}
+      </div>
+      <p className="text-xs text-muted-foreground">Generá este token en la configuración de la API de conversiones de tu pixel en Meta.</p>
+    </div>
+    {canManage && <div className="flex flex-wrap gap-3"><Button onClick={save} disabled={pending || !validPixel || !validToken}>{configured ? "Guardar cambios" : "Guardar configuración"}</Button>{configured && <Button variant="outline" onClick={disconnect} disabled={pending}><Unplug /> Desconectar</Button>}</div>}
   </CardContent></Card>;
 }

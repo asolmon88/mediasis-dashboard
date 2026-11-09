@@ -48,12 +48,12 @@ const sections = [
     ],
   },
   {
-    title: "5. Conexión con Meta y Facebook Pixel",
+    title: "5. Configuración de Meta y Facebook Pixel",
     body: [
-      "Si un usuario autorizado conecta un Facebook Pixel desde el dashboard, Mediasis solicita autorización mediante Meta para comprobar su acceso al pixel. Para configurar la conexión tratamos los identificadores de la cuenta y del portafolio empresarial de Meta, el ID del pixel seleccionado y la información técnica necesaria para completar la autorización.",
-      "Mediasis guarda el ID del pixel y una credencial de acceso de servidor asociada al negocio. La usamos para que la aplicación de pedidos envíe a Meta los eventos de conversión configurados para ese pixel. La credencial se mantiene en el servidor y no se muestra en el dashboard. Meta también trata la información recibida conforme a sus propias políticas.",
-      "Un usuario autorizado puede desconectar el pixel desde el dashboard; esta acción elimina de la configuración activa de Mediasis el ID del pixel y la credencial de envío. También puede retirar el acceso de Mediasis desde las integraciones empresariales de Meta. La desconexión no elimina los eventos que Meta ya haya recibido ni los registros que deban conservarse por motivos legales u operativos.",
-      "Para solicitar información, acceso o eliminación de los datos de la conexión con Meta conservados por Mediasis, escriba a soporte@mediasis.cr. La información sobre los eventos de clientes finales enviados desde la aplicación de pedidos se explica también en la política de privacidad de esa aplicación.",
+      "Un usuario autorizado puede configurar un Facebook Pixel desde el dashboard ingresando directamente el ID del pixel y el token de la API de conversiones generado en Meta. Mediasis no inicia sesión en Meta ni solicita acceso a la cuenta o al portafolio empresarial del negocio.",
+      "Mediasis guarda el ID del pixel y el token asociado al negocio. Los usamos para que la aplicación de pedidos envíe a Meta los eventos de conversión configurados desde el navegador y el servidor. El token se mantiene protegido y solo puede consultarlo o reemplazarlo un usuario autorizado del negocio. Meta trata los eventos recibidos conforme a sus propias políticas.",
+      "Un usuario autorizado puede desconectar el pixel desde el dashboard; esta acción elimina de la configuración activa de Mediasis tanto el ID como el token. La desconexión no elimina los eventos que Meta ya haya recibido ni los registros que deban conservarse por motivos legales u operativos.",
+      "Para solicitar información, acceso o eliminación de la configuración de Meta conservada por Mediasis, escriba a soporte@mediasis.cr. La información sobre los eventos de clientes finales enviados desde la aplicación de pedidos se explica también en la política de privacidad de esa aplicación.",
     ],
   },
   {

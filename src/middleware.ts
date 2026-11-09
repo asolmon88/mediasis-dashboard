@@ -37,8 +37,7 @@ const clerkHandler = clerkMiddleware(async (auth, request) => {
       // Card tokenization finishes by returning the browser to this endpoint.
       // It has its own one-time session + callback-secret validation and must
       // not be blocked merely because the user is signed in with Clerk.
-      request.nextUrl.pathname !== '/api/payments/tilopay/card-token-return' &&
-      !request.nextUrl.pathname.startsWith('/api/meta/')
+      request.nextUrl.pathname !== '/api/payments/tilopay/card-token-return'
     ) {
       return NextResponse.json({ message: 'Esta operación todavía no está disponible para esta cuenta.' }, { status: 403 })
     }

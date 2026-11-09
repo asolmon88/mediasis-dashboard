@@ -13,5 +13,5 @@ export default async function FacebookPixelPage() {
   }
   const { data, error } = await authorized.admin.schema("mediasis").from("businesses").select("meta_pixel_id_orders, meta_token_orders").eq("uid", authorized.businessId).maybeSingle();
   if (error) return <DashboardAccessDenied title="Facebook pixel no disponible" description="No se pudo cargar la configuración de Facebook pixel." />;
-  return <main className="mx-auto w-full max-w-3xl p-4 md:p-8"><FacebookPixelCard pixelId={data?.meta_pixel_id_orders ?? null} serverEventsConnected={Boolean(data?.meta_pixel_id_orders && data?.meta_token_orders)} canManage={authorized.canManage} /></main>;
+  return <main className="mx-auto w-full max-w-3xl p-4 md:p-8"><FacebookPixelCard pixelId={data?.meta_pixel_id_orders ?? null} hasSavedToken={Boolean(data?.meta_token_orders)} canManage={authorized.canManage} /></main>;
 }
