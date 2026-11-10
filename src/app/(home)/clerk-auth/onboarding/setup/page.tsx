@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { loadGuidedOnboarding } from "@/lib/dashboard/guided-onboarding";
+import { getOrderAppBaseUrl } from "@/lib/order-app-url";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { LocationStoreProvider } from "@/stores/location-store";
 import { GuidedStorefrontWizard } from "./GuidedStorefrontWizard";
@@ -18,7 +19,7 @@ export default async function GuidedSetupPage({ searchParams }: {
   if (state.step === "completed") redirect("/admin");
   if (state.step === "payment_method" && edit !== "review")
     redirect(`/clerk-auth/onboarding/payment?business=${encodeURIComponent(business)}`);
-  const storefrontBaseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://www.mediasis.cr";
+  const storefrontBaseUrl = getOrderAppBaseUrl();
   const admin = createAdminClient();
   const { data: user } = await admin.schema("mediasis").from("app_users").select("app_user_id")
     .eq("clerk_user_id", session.userId).maybeSingle();

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { requireStorefrontManagementAccess } from "@/lib/dashboard/storefront-authorization";
+import { getOrderAppStorefrontUrl } from "@/lib/order-app-url";
 
 export type PreferredStorefrontLink = {
   url: string;
@@ -45,7 +46,7 @@ export async function getAuthorizedPreferredStorefrontLink() {
   const storefrontLink: PreferredStorefrontLink | null = customDomain
     ? { url: `https://${customDomain}`, kind: "custom_domain" }
     : slug
-      ? { url: `https://www.mediasis.cr/${encodeURIComponent(slug)}`, kind: "mediasis_link" }
+      ? { url: getOrderAppStorefrontUrl(slug), kind: "mediasis_link" }
       : null;
 
   return { ...authorized, storefrontLink };

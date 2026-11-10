@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { DashboardAccessDenied } from "@/components/dashboard/DashboardAccessDenied";
 import { requireDomainAccess } from "@/lib/dashboard/domain-authorization";
+import { getOrderAppStorefrontUrl } from "@/lib/order-app-url";
 import { getBillingProfile } from "../billing/actions";
 import { DomainManager } from "./domain-manager";
 import { getDomainPurchaseOutcome, getStorefrontDomains } from "./actions";
@@ -13,7 +14,11 @@ export default async function DomainsPage({ searchParams }: { searchParams?: Pro
     .eq("business_uid", authorized.businessId)
     .eq("is_internal_storefront", true)
     .maybeSingle();
-  const linkCard = storefrontLink?.base_domain_slug ? <Card><CardContent className="py-5"><p className="text-sm font-medium">Link de tu app de pedidos</p><a className="mt-1 block break-all text-blue-600 underline" href={`https://www.mediasis.cr/${storefrontLink.base_domain_slug}`} target="_blank" rel="noreferrer">{`mediasis.cr/${storefrontLink.base_domain_slug}`}</a><p className="mt-2 text-sm text-muted-foreground">Compartilo con tus clientes. No necesitás comprar un dominio para usarlo.</p></CardContent></Card> : null;
+  const storefrontUrl = storefrontLink?.base_domain_slug
+    ? getOrderAppStorefrontUrl(storefrontLink.base_domain_slug)
+    : null;
+  const storefrontLabel = storefrontUrl ? storefrontUrl.replace(/^https?:\/\//, "") : null;
+  const linkCard = storefrontUrl ? <Card><CardContent className="py-5"><p className="text-sm font-medium">Link de tu app de pedidos</p><a className="mt-1 block break-all text-blue-600 underline" href={storefrontUrl} target="_blank" rel="noreferrer">{storefrontLabel}</a><p className="mt-2 text-sm text-muted-foreground">Compartilo con tus clientes. No necesitás comprar un dominio para usarlo.</p></CardContent></Card> : null;
   if (authorized.mediasisManaged && !authorized.canManage) {
     const { data } = await authorized.admin
       .schema("mediasis")
