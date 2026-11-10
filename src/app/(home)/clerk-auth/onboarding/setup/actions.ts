@@ -39,10 +39,9 @@ export async function saveGuidedPayments(businessId: string, input: unknown) {
   }
 }
 
-export async function saveGuidedFulfillment(businessId: string, input: unknown) {
+export async function saveGuidedFulfillment(businessId: string) {
   try {
-    const data = z.object({ tableEnabled: z.boolean() }).parse(input);
-    return { success: true as const, state: await saveGuidedStepForOwner(id.parse(businessId), "fulfillment_methods", data) };
+    return { success: true as const, state: await saveGuidedStepForOwner(id.parse(businessId), "fulfillment_methods", {}) };
   } catch (error) {
     return { success: false as const, message: error instanceof Error ? error.message : "Revisá los métodos de entrega." };
   }

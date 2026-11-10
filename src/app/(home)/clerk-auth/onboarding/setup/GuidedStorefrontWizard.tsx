@@ -38,7 +38,6 @@ export function GuidedStorefrontWizard({ initialState, storefrontBaseUrl, editRe
     description: state.productDescription ?? "", imageUrl: state.productImages?.[0] ?? "" });
   const [initialLogo] = useState(state.logoUrl?.startsWith("http") ? state.logoUrl : "");
   const [initialProductImage] = useState(state.productImages?.[0] ?? "");
-  const [tableEnabled, setTableEnabled] = useState(state.tableEnabled);
   const [uploading, setUploading] = useState(false);
   const businessId = state.businessId;
   const index = steps.indexOf(step);
@@ -140,17 +139,16 @@ export function GuidedStorefrontWizard({ initialState, storefrontBaseUrl, editRe
         </div> : null}
         {step === "fulfillment_methods" ? <div className="space-y-5">
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4"><p className="font-semibold">✓ Pick up</p><p className="text-sm text-slate-600">Tus clientes podrán retirar su pedido.</p></div>
-          <label className="flex items-center gap-3 rounded-xl border p-4"><input type="checkbox" checked={tableEnabled} onChange={(event) => setTableEnabled(event.target.checked)} /><span className="font-medium">Agregar En mesa</span></label>
           <p className="text-sm text-slate-600">Podrás configurar Express y otros detalles más adelante desde el panel.</p>
           <div className="flex items-center justify-between gap-3">
             <Button variant="ghost" disabled={busy} onClick={back}>← Volver</Button>
-            <Button disabled={busy} onClick={() => void run(() => saveGuidedFulfillment(businessId, { tableEnabled }), "review")}>Guardar y ver mi app <ArrowRight aria-hidden="true" /></Button>
+            <Button disabled={busy} onClick={() => void run(() => saveGuidedFulfillment(businessId), "review")}>Guardar y ver mi app <ArrowRight aria-hidden="true" /></Button>
           </div>
         </div> : null}
         {step === "review" ? <div className="space-y-5">
           <p className="text-slate-700">Creaste la base de tu app de pedidos para <strong>{state.businessName}</strong>. Ya podés compartir su enlace; los pedidos se habilitarán al activar la prueba.</p>
           <div className="grid gap-3 text-sm sm:grid-cols-2"><div className="rounded-xl border p-4"><strong>Pagos</strong><p>Efectivo{state.sinpeEnabled ? " · SINPE Móvil" : ""}</p></div>
-            <div className="rounded-xl border p-4"><strong>Entrega</strong><p>Pick up{state.tableEnabled ? " · En mesa" : ""}</p></div></div>
+            <div className="rounded-xl border p-4"><strong>Entrega</strong><p>Pick up</p></div></div>
           <a className="break-all text-sm text-blue-600 underline" href={`${storefrontBaseUrl}/${state.slug}`} target="_blank" rel="noreferrer">{storefrontBaseUrl.replace(/^https?:\/\//, "")}/{state.slug}</a>
           <p className="text-sm text-slate-600">Tu prueba gratis de 7 días empezará cuando agregués y confirmés tu tarjeta.</p>
           <div className="flex items-center justify-between gap-3">
@@ -170,7 +168,7 @@ export function GuidedStorefrontWizard({ initialState, storefrontBaseUrl, editRe
           productDescription: product.description || state.productDescription,
           productImageUrl: product.imageUrl || state.productImages?.[0],
           productSkipped: Boolean(state.productSkippedAt) && (step !== "starter_product" || !product.name.trim()),
-          cashEnabled: Boolean(state.paymentsReviewedAt), pickupEnabled: Boolean(state.fulfillmentReviewedAt), tableEnabled,
+          cashEnabled: Boolean(state.paymentsReviewedAt), pickupEnabled: Boolean(state.fulfillmentReviewedAt),
         }} /><p className="max-w-xs text-center text-xs text-slate-500 lg:text-left">Los cambios sin guardar solo aparecen aquí. <a className="text-blue-600 underline" href={`${storefrontBaseUrl}/${state.slug}`} target="_blank" rel="noreferrer">Abrir la app real</a></p></aside>
     </div>
   </div>;

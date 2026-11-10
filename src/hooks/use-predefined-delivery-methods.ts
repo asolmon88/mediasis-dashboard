@@ -18,6 +18,7 @@ export function usePredefinedDeliveryMethods() {
           .schema("mediasis")
           .from("delivery_methods")
           .select("id, name")
+          .eq("visibility", true)
           .order("name");
 
         if (error) throw error;

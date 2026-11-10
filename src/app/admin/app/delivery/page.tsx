@@ -11,7 +11,7 @@ export default async function DeliveryPage() {
   const [{ data, error }, { data: templates, error: templatesError }] = await Promise.all([
     authorized.admin.schema("mediasis").from("delivery_methods_business")
       .select("name, instructions, visibility, uid").eq("business_id", authorized.businessId),
-    authorized.admin.schema("mediasis").from("delivery_methods").select("id, name").order("name"),
+    authorized.admin.schema("mediasis").from("delivery_methods").select("id, name").eq("visibility", true).order("name"),
   ]);
   if (error || templatesError) return <div className="flex items-center justify-center"><p>Error al cargar los métodos de delivery.</p></div>;
   return <MainPage delivery_methods={data as delivery_methods_for_table}

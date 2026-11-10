@@ -51,7 +51,6 @@ export type GuidedBootstrap = {
   productImages: string[] | null;
   sinpeEnabled: boolean;
   sinpePhone: string | null;
-  tableEnabled: boolean;
   plan: string;
   amountMinor: number;
   currencyCode: string;

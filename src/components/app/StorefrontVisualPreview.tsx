@@ -33,14 +33,13 @@ type Props = {
   productSkipped?: boolean;
   cashEnabled?: boolean;
   pickupEnabled?: boolean;
-  tableEnabled?: boolean;
 };
 
 // A visual copy of the order app's TopBar → HeroSection → StartCards layout.
 // It receives form state only; no storefront requests or checkout controls run here.
 export default function StorefrontVisualPreview({ businessName, locationName, primaryColor, backgroundColor,
   logoUrl, productName, productPrice, productDescription, productImageUrl, productSkipped = false,
-  pickupEnabled = false, tableEnabled = false }: Props) {
+  pickupEnabled = false }: Props) {
   const name = businessName.trim() || "Tu negocio";
   const merchantLogo = logoUrl && /^(https?:|blob:|data:image\/)/.test(logoUrl) ? logoUrl : null;
   const hasProduct = Boolean(productName?.trim());
@@ -69,7 +68,6 @@ export default function StorefrontVisualPreview({ businessName, locationName, pr
         {pickupEnabled ? <div className="w-full">
           <div className="flex h-10 w-full items-center justify-start gap-1 overflow-hidden rounded-full bg-[#ececec] p-1">
             <div className="flex h-8 min-w-0 flex-1 items-center justify-center rounded-full border border-white bg-white px-2.5 text-sm font-normal text-[#111] shadow-[0_1px_3px_rgba(0,0,0,0.12)]"><span className="truncate">Pick up</span></div>
-            {tableEnabled ? <div className="flex h-8 min-w-0 flex-1 items-center justify-center rounded-full border border-transparent px-2.5 text-sm font-normal text-[#666]"><span className="truncate">En mesa</span></div> : null}
           </div>
         </div> : null}
         {pickupEnabled && locationName.trim() ? <div className="flex w-full items-center justify-center">

@@ -20,7 +20,6 @@ type PhoneProps = {
     productSkipped?: boolean
     cashEnabled?: boolean
     pickupEnabled?: boolean
-    tableEnabled?: boolean
   }
 }
 
